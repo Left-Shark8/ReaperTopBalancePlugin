@@ -1,20 +1,29 @@
 # ReaperLeaderboardPlugin
 
-Drag-and-drop RocketMod Unturned plugin for economy and kill leaderboards.
+RocketMod Unturned plugin for economy and kill leaderboards.
 
-## Install
+## Drag And Drop Install
 
-Copy these into your server plugin folder:
-
-```text
-Servers\<YourServer>\Rocket\Plugins\ReaperLeaderboardPlugin\
-```
-
-Required files:
+Drop the folders from this repo into your server's Rocket folder so the final layout looks like this:
 
 ```text
-ReaperLeaderboardPlugin.dll
-Libraries\MySql.Data.dll
+Servers\<YourServer>\Rocket\
+  Plugins\
+    ReaperLeaderboardPlugin.dll
+  Libraries\
+    MySql.Data.dll
+    BouncyCastle.Crypto.dll
+    Google.Protobuf.dll
+    K4os.Compression.LZ4.dll
+    K4os.Compression.LZ4.Streams.dll
+    K4os.Hash.xxHash.dll
+    Renci.SshNet.dll
+    System.Buffers.dll
+    System.Memory.dll
+    System.Numerics.Vectors.dll
+    System.Runtime.CompilerServices.Unsafe.dll
+    Ubiety.Dns.Core.dll
+    ZstdNet.dll
 ```
 
 Restart the server after copying the files.
@@ -50,20 +59,10 @@ steamId
 balance
 ```
 
-The plugin also creates its own kill stats table:
+The plugin creates its own kill stats table:
 
 ```text
 reaper_kill_stats
-```
-
-That table stores:
-
-```text
-steam_id
-display_name
-player_kills
-zombie_kills
-mega_zombie_kills
 ```
 
 `/topbal` shows saved player names when the plugin has seen the player in the kill tracker. Otherwise it falls back to SteamID64.
