@@ -19,11 +19,17 @@ public sealed class UconomyBalanceRepository
     public IReadOnlyList<UconomyBalanceEntry> GetTopBalances(int count)
     {
         var table = EscapeIdentifier(configuration.UconomyTable);
+        var killStatsTable = EscapeIdentifier(configuration.KillStatsTable);
         var steamIdColumn = EscapeIdentifier(configuration.UconomySteamIdColumn);
         var balanceColumn = EscapeIdentifier(configuration.UconomyBalanceColumn);
 
         var entries = new List<UconomyBalanceEntry>();
-        var query = $"SELECT {steamIdColumn}, {balanceColumn} FROM {table} ORDER BY {balanceColumn} DESC LIMIT @count;";
+        var query = $@"
+SELECT economy.{steamIdColumn}, economy.{balanceColumn}, kills.display_name
+FROM {table} economy
+LEFT JOIN {killStatsTable} kills ON kills.steam_id = economy.{steamIdColumn}
+ORDER BY economy.{balanceColumn} DESC
+LIMIT @count;";
 
         using var connection = new MySqlConnection(BuildConnectionString());
         using var command = new MySqlCommand(query, connection);
@@ -34,8 +40,12 @@ public sealed class UconomyBalanceRepository
         using var reader = command.ExecuteReader();
         while (reader.Read())
         {
+            var steamId = Convert.ToString(reader[0]) ?? "Unknown";
+            var displayName = Convert.ToString(reader[2]);
+
             entries.Add(new UconomyBalanceEntry(
-                Convert.ToString(reader[0]) ?? "Unknown",
+                steamId,
+                string.IsNullOrWhiteSpace(displayName) ? steamId : displayName,
                 Convert.ToDecimal(reader[1])));
         }
 

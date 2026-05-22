@@ -47,7 +47,7 @@ public sealed class CommandTopBalance : IRocketCommand
             {
                 var entry = balances[i];
                 var rank = i + 1;
-                UnturnedChat.Say(caller, $"{rank}. {entry.SteamId}: {configuration.TopBalanceMoneyName}{entry.Balance:N0}");
+                UnturnedChat.Say(caller, $"{rank}. {entry.DisplayName}: {configuration.TopBalanceMoneyName}{entry.Balance:N0}");
             }
         }
         catch (Exception exception)

@@ -48,6 +48,7 @@ These values are configurable in the Rocket-generated plugin config:
 ```
 
 Grant the permission `reaperleaderboard.topbal` to players who should use `/topbal`.
+When a player has been seen by the kill tracker, `/topbal` shows their saved display name instead of SteamID64.
 
 ## Kill leaderboard setup
 
