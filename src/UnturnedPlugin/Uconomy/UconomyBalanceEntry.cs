@@ -1,4 +1,4 @@
-namespace UnturnedPlugin.Uconomy;
+namespace ReaperLeaderboardPlugin.Uconomy;
 
 public sealed class UconomyBalanceEntry
 {

@@ -1,6 +1,6 @@
 using Rocket.API;
 
-namespace UnturnedPlugin;
+namespace ReaperLeaderboardPlugin;
 
 public sealed class PluginConfiguration : IRocketPluginConfiguration
 {
@@ -15,6 +15,9 @@ public sealed class PluginConfiguration : IRocketPluginConfiguration
     public string UconomyBalanceColumn { get; set; } = "balance";
     public string TopBalanceHeader { get; set; } = "Top 3 richest players:";
     public string TopBalanceMoneyName { get; set; } = "$";
+    public string KillStatsTable { get; set; } = "reaper_kill_stats";
+    public string KillsHeader { get; set; } = "Your kills:";
+    public string TopKillsHeader { get; set; } = "Top kill leaders:";
 
     public void LoadDefaults()
     {
@@ -29,5 +32,8 @@ public sealed class PluginConfiguration : IRocketPluginConfiguration
         UconomyBalanceColumn = "balance";
         TopBalanceHeader = "Top 3 richest players:";
         TopBalanceMoneyName = "$";
+        KillStatsTable = "reaper_kill_stats";
+        KillsHeader = "Your kills:";
+        TopKillsHeader = "Top kill leaders:";
     }
 }

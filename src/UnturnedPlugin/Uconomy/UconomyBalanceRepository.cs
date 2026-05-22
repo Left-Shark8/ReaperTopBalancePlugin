@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using MySql.Data.MySqlClient;
 
-namespace UnturnedPlugin.Uconomy;
+namespace ReaperLeaderboardPlugin.Uconomy;
 
 public sealed class UconomyBalanceRepository
 {

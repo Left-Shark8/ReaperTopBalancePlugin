@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using Rocket.API;
 using Rocket.Core.Logging;
 using Rocket.Unturned.Chat;
-using UnturnedPlugin.Uconomy;
+using ReaperLeaderboardPlugin.Uconomy;
 
-namespace UnturnedPlugin.Commands;
+namespace ReaperLeaderboardPlugin.Commands;
 
 public sealed class CommandTopBalance : IRocketCommand
 {
@@ -19,7 +19,7 @@ public sealed class CommandTopBalance : IRocketCommand
 
     public List<string> Aliases => new() { "topbalance" };
 
-    public List<string> Permissions => new() { "unturnedplugin.topbal" };
+    public List<string> Permissions => new() { "reaperleaderboard.topbal" };
 
     public void Execute(IRocketPlayer caller, string[] command)
     {

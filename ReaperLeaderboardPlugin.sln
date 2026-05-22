@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnturnedPlugin", "src\UnturnedPlugin\UnturnedPlugin.csproj", "{C8796A14-3F54-4E49-9B34-EBEBC3213D8D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReaperLeaderboardPlugin", "src\UnturnedPlugin\ReaperLeaderboardPlugin.csproj", "{C8796A14-3F54-4E49-9B34-EBEBC3213D8D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
