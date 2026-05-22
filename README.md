@@ -1,40 +1,76 @@
 # ReaperLeaderboardPlugin
 
-Simple RocketMod-style Unturned plugin that displays economy and kill leaderboards.
+Drag-and-drop RocketMod Unturned plugin for economy and kill leaderboards.
 
-## What is included
+## Install
 
-- `Plugin.cs`: plugin load/unload entry point.
-- `PluginConfiguration.cs`: generated RocketMod configuration.
-- `CommandTopBalance.cs`: `/topbal` command that displays the 3 richest Uconomy accounts.
-- `CommandKills.cs`: `/kills` command that displays your player, zombie, and mega zombie kills.
-- `CommandTopKills.cs`: `/topkills` command that displays the top 3 players for each kill category.
-- `Libs/`: place your Unturned, RocketMod, and MySQL reference DLLs here.
+Copy these into your server plugin folder:
 
-## Required references
+```text
+Servers\<YourServer>\Rocket\Plugins\ReaperLeaderboardPlugin\
+```
 
-Copy these DLLs from your Unturned server/RocketMod install into `Libs/`:
+Required files:
 
-- `Rocket.API.dll`
-- `Rocket.Core.dll`
-- `Rocket.Unturned.dll`
-- `UnityEngine.dll`
-- `Assembly-CSharp.dll`
-- `com.rlabrecque.steamworks.net.dll`
-- `MySql.Data.dll`
+```text
+ReaperLeaderboardPlugin.dll
+Libraries\MySql.Data.dll
+```
 
-Depending on your server build and plugin features, you may also need references such as
-`Assembly-CSharp.dll`, `UnityEngine.CoreModule.dll`, or `SDG.NetTransport.dll`.
+Restart the server after copying the files.
 
-## Uconomy setup
+## Commands
 
-The `/topbal` command assumes the common Uconomy MySQL schema:
+```text
+/topbal
+/kills
+/topkills
+```
 
-- Table: `uconomy`
-- Steam ID column: `steamId`
-- Balance column: `balance`
+## Permissions
 
-These values are configurable in the Rocket-generated plugin config:
+```text
+reaperleaderboard.topbal
+reaperleaderboard.kills
+reaperleaderboard.topkills
+```
+
+## Database
+
+The plugin uses MySQL. It reads balances from your existing Uconomy table:
+
+```text
+uconomy
+```
+
+Default balance columns:
+
+```text
+steamId
+balance
+```
+
+The plugin also creates its own kill stats table:
+
+```text
+reaper_kill_stats
+```
+
+That table stores:
+
+```text
+steam_id
+display_name
+player_kills
+zombie_kills
+mega_zombie_kills
+```
+
+`/topbal` shows saved player names when the plugin has seen the player in the kill tracker. Otherwise it falls back to SteamID64.
+
+## Config
+
+After the first server start, Rocket creates the plugin config. Update the MySQL/Uconomy settings there:
 
 ```xml
 <UconomyHost>localhost</UconomyHost>
@@ -45,48 +81,5 @@ These values are configurable in the Rocket-generated plugin config:
 <UconomyTable>uconomy</UconomyTable>
 <UconomySteamIdColumn>steamId</UconomySteamIdColumn>
 <UconomyBalanceColumn>balance</UconomyBalanceColumn>
-```
-
-Grant the permission `reaperleaderboard.topbal` to players who should use `/topbal`.
-When a player has been seen by the kill tracker, `/topbal` shows their saved display name instead of SteamID64.
-
-## Kill leaderboard setup
-
-The plugin creates this table automatically in the same MySQL database:
-
-```xml
 <KillStatsTable>reaper_kill_stats</KillStatsTable>
 ```
-
-Commands:
-
-- `/kills`: shows your player, zombie, and mega zombie kills.
-- `/topkills`: shows the top 3 players in each kill category.
-
-Permissions:
-
-- `reaperleaderboard.kills`
-- `reaperleaderboard.topkills`
-
-## Build
-
-```powershell
-dotnet build .\ReaperLeaderboardPlugin.sln -c Release
-```
-
-The compiled plugin DLL will be at:
-
-```text
-src\UnturnedPlugin\bin\Release\ReaperLeaderboardPlugin.dll
-```
-
-## Install
-
-1. Create this folder on your server:
-
-   ```text
-   Servers\<YourServer>\Rocket\Plugins\ReaperLeaderboardPlugin\
-   ```
-
-2. Copy `ReaperLeaderboardPlugin.dll` into that folder.
-3. Start the server once so RocketMod creates the configuration file.
