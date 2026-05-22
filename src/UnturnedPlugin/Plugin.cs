@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Rocket.Core.Logging;
 using Rocket.Core.Plugins;
 using Rocket.Unturned.Events;
@@ -15,6 +16,7 @@ public sealed class Plugin : RocketPlugin<PluginConfiguration>
     public static Plugin? Instance { get; private set; }
 
     private KillStatsRepository? killStatsRepository;
+    private readonly Dictionary<Zombie, Player> zombieInstigators = new();
 
     protected override void Load()
     {
@@ -23,17 +25,20 @@ public sealed class Plugin : RocketPlugin<PluginConfiguration>
         killStatsRepository.EnsureTable();
 
         UnturnedPlayerEvents.OnPlayerDeath += OnPlayerDeath;
-        ZombieManager.onZombieDead += OnZombieDead;
+        DamageTool.damageZombieRequested += OnDamageZombieRequested;
+        DamageTool.zombieDamaged += OnZombieDamaged;
 
-        Logger.Log($"{Name} loaded.");
+        Rocket.Core.Logging.Logger.Log($"{Name} loaded.");
     }
 
     protected override void Unload()
     {
         UnturnedPlayerEvents.OnPlayerDeath -= OnPlayerDeath;
-        ZombieManager.onZombieDead -= OnZombieDead;
+        DamageTool.damageZombieRequested -= OnDamageZombieRequested;
+        DamageTool.zombieDamaged -= OnZombieDamaged;
 
-        Logger.Log($"{Name} unloaded.");
+        Rocket.Core.Logging.Logger.Log($"{Name} unloaded.");
+        zombieInstigators.Clear();
         killStatsRepository = null;
         Instance = null;
     }
@@ -52,16 +57,33 @@ public sealed class Plugin : RocketPlugin<PluginConfiguration>
         }
         catch (Exception exception)
         {
-            Logger.LogException(exception, "Failed to record player kill.");
+            Rocket.Core.Logging.Logger.LogException(exception, "Failed to record player kill.");
         }
     }
 
-    private void OnZombieDead(Player instigator, Zombie zombie, Vector3 ragdoll, ERagdollEffect ragdollEffect, bool trackKill, ERagdollDestroy ragdollDestroy)
+    private void OnDamageZombieRequested(ref DamageZombieParameters parameters, ref bool shouldAllow)
     {
-        if (killStatsRepository == null || instigator == null || !trackKill)
+        if (!shouldAllow || parameters.zombie == null || parameters.instigator is not Player player)
         {
             return;
         }
+
+        zombieInstigators[parameters.zombie] = player;
+    }
+
+    private void OnZombieDamaged(Zombie zombie, ref Vector3 direction, ref float damage, ref float times, ref bool canRepair)
+    {
+        if (killStatsRepository == null || zombie == null || !zombie.isDead)
+        {
+            return;
+        }
+
+        if (!zombieInstigators.TryGetValue(zombie, out var instigator))
+        {
+            return;
+        }
+
+        zombieInstigators.Remove(zombie);
 
         try
         {
@@ -73,7 +95,7 @@ public sealed class Plugin : RocketPlugin<PluginConfiguration>
         }
         catch (Exception exception)
         {
-            Logger.LogException(exception, "Failed to record zombie kill.");
+            Rocket.Core.Logging.Logger.LogException(exception, "Failed to record zombie kill.");
         }
     }
 }
